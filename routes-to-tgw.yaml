@@ -1,0 +1,88 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Adds static routes to TGW in each subnet's routing table
+# Add default route to TGW for pact-fed-dev subnets
+Resources:
+  Route01:    
+    Type: AWS::EC2::Route
+    Properties: 
+      DestinationCidrBlock: 0.0.0.0/0
+      TransitGatewayId: tgw-00ed9e2963699c4da
+      RouteTableId: rtb-01ff6470d6dc955fe
+  Route02:    
+    Type: AWS::EC2::Route
+    Properties: 
+      DestinationCidrBlock: 0.0.0.0/0
+      TransitGatewayId: tgw-00ed9e2963699c4da
+      RouteTableId: rtb-0f71c8edb063cb1a6
+  Route03:    
+    Type: AWS::EC2::Route
+    Properties: 
+      DestinationCidrBlock: 0.0.0.0/0
+      TransitGatewayId: tgw-00ed9e2963699c4da
+      RouteTableId: rtb-089931b5b018e70ed
+  Route04:    
+    Type: AWS::EC2::Route
+    Properties: 
+      DestinationCidrBlock: 0.0.0.0/0
+      TransitGatewayId: tgw-00ed9e2963699c4da
+      RouteTableId: rtb-0c912896c5afd8bd0
+  Route05:    
+    Type: AWS::EC2::Route
+    Properties: 
+      DestinationCidrBlock: 0.0.0.0/0
+      TransitGatewayId: tgw-00ed9e2963699c4da
+      RouteTableId: rtb-027196a0df5eba751
+  Route06:    
+    Type: AWS::EC2::Route
+    Properties: 
+      DestinationCidrBlock: 0.0.0.0/0
+      TransitGatewayId: tgw-00ed9e2963699c4da
+      RouteTableId: rtb-0f7a9ebffb64ed27d
+  Route07:    
+    Type: AWS::EC2::Route
+    Properties: 
+      DestinationCidrBlock: 0.0.0.0/0
+      TransitGatewayId: tgw-00ed9e2963699c4da
+      RouteTableId: rtb-0f51e79ec0c86a7b7
+  Route08:    
+    Type: AWS::EC2::Route
+    Properties: 
+      DestinationCidrBlock: 0.0.0.0/0
+      TransitGatewayId: tgw-00ed9e2963699c4da
+      RouteTableId: rtb-077d03e0c9f19068e
+  Route09:    
+    Type: AWS::EC2::Route
+    Properties: 
+      DestinationCidrBlock: 0.0.0.0/0
+      TransitGatewayId: tgw-00ed9e2963699c4da
+      RouteTableId: rtb-015e7c0c2caa51c21
+  Route10:    
+    Type: AWS::EC2::Route
+    Properties: 
+      DestinationCidrBlock: 0.0.0.0/0
+      TransitGatewayId: tgw-00ed9e2963699c4da
+      RouteTableId: rtb-0db1ebb539ff3fa61
+  Route11:    
+    Type: AWS::EC2::Route
+    Properties: 
+      DestinationCidrBlock: 0.0.0.0/0
+      TransitGatewayId: tgw-00ed9e2963699c4da
+      RouteTableId: rtb-0382a059311abd179
+  Route12:    
+    Type: AWS::EC2::Route
+    Properties: 
+      DestinationCidrBlock: 0.0.0.0/0
+      TransitGatewayId: tgw-00ed9e2963699c4da
+      RouteTableId: rtb-0a1e01389740cc123
+  Route13:    
+    Type: AWS::EC2::Route
+    Properties: 
+      DestinationCidrBlock: 0.0.0.0/0
+      TransitGatewayId: tgw-00ed9e2963699c4da
+      RouteTableId: rtb-0a5ee968fd1d0ce54
+  Route14:    
+    Type: AWS::EC2::Route
+    Properties: 
+      DestinationCidrBlock: 0.0.0.0/0
+      TransitGatewayId: tgw-00ed9e2963699c4da
+      RouteTableId: rtb-0f0a6cc9d8845cc94

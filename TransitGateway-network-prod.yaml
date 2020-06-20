@@ -1,0 +1,190 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AWS CloudFormation which creates transit gateway, attaches VPCs, adds route tables
+Metadata:
+  version: 1.0.0
+Resources:
+  TransitGateway:
+    Type: AWS::EC2::TransitGateway
+    Properties:
+      AmazonSideAsn: 64512
+      AutoAcceptSharedAttachments: disable
+      DefaultRouteTableAssociation: enable
+      DefaultRouteTablePropagation: enable
+      Description: pact us-e1 transit gateway
+      DnsSupport: enable
+      Tags:
+      - Key: Name
+        Value: pact-net-tgw-use1
+      VpnEcmpSupport: enable
+  # TGW Route Tables
+  TransitGatewayRouteTableMain:
+    Type: AWS::EC2::TransitGatewayRouteTable
+    Properties:
+      Tags:
+        - Key: Name
+          Value: pact-net-tgwrt-main-use1
+      TransitGatewayId: !Ref TransitGateway
+#   TGW Attachments
+  TgwAttachmentEdgeVpc:
+    Type: AWS::EC2::TransitGatewayAttachment
+    Properties: 
+      SubnetIds: 
+        - subnet-0fb38bbb941b8f93d
+        - subnet-0badc997df319aeed
+      Tags: 
+        - Key: Name
+          Value: pact-net-tgwa-EdgeVPC
+      TransitGatewayId: !Ref TransitGateway
+      VpcId: vpc-0010b3e48fe4a4ff5
+  TgwAttachmentEgressVpc:
+    Type: AWS::EC2::TransitGatewayAttachment
+    Properties: 
+      SubnetIds: 
+        - subnet-0b98fd24ecfc6a2b4
+        - subnet-08cb2cb277aeb7913
+      Tags: 
+        - Key: Name
+          Value: pact-net-tgwa-EgressVPC
+      TransitGatewayId: !Ref TransitGateway
+      VpcId: vpc-041eb478e60b417a1
+  TgwAttachmentFedDevVpc:
+    Type: AWS::EC2::TransitGatewayAttachment
+    Properties: 
+      SubnetIds: 
+        - subnet-0a56ec3de8d9aab85
+        - subnet-0f82094ced37bfe49
+      Tags: 
+        - Key: Name
+          Value: pact-net-tgwa-FedDevVPC
+      TransitGatewayId: !Ref TransitGateway
+      VpcId: vpc-0d4664e8f50fa5dad
+  TgwAttachmentFedProdVpc:
+    Type: AWS::EC2::TransitGatewayAttachment
+    Properties: 
+      SubnetIds: 
+        - subnet-0646e45f36dd0b986
+        - subnet-0e0aaf516ef5fb22b
+        - subnet-0fd43b145225554dc
+      Tags: 
+        - Key: Name
+          Value: pact-net-tgwa-FedProdVPC
+      TransitGatewayId: !Ref TransitGateway
+      VpcId: vpc-032d35bbf3e974d17
+  # Route Table associations
+  TgwRtEdgeAssociationEdgeVpc:
+    Type: AWS::EC2::TransitGatewayRouteTableAssociation
+    Properties: 
+      TransitGatewayAttachmentId: !Ref TgwAttachmentEdgeVpc
+      TransitGatewayRouteTableId: !Ref TransitGatewayRouteTableMain
+  TgwRtMainAssociationEgressVpc:
+    Type: AWS::EC2::TransitGatewayRouteTableAssociation
+    Properties: 
+      TransitGatewayAttachmentId: !Ref TgwAttachmentEgressVpc
+      TransitGatewayRouteTableId: !Ref TransitGatewayRouteTableMain
+  TgwRtMainAssociationFedDevVpc:
+    Type: AWS::EC2::TransitGatewayRouteTableAssociation
+    Properties: 
+      TransitGatewayAttachmentId: !Ref TgwAttachmentFedDevVpc
+      TransitGatewayRouteTableId: !Ref TransitGatewayRouteTableMain
+  TgwRtMainAssociationFedProdVpc:
+    Type: AWS::EC2::TransitGatewayRouteTableAssociation
+    Properties: 
+      TransitGatewayAttachmentId: !Ref TgwAttachmentFedProdVpc
+      TransitGatewayRouteTableId: !Ref TransitGatewayRouteTableMain
+  # Routes 
+  TgwRoutePublic:
+    Type: AWS::EC2::TransitGatewayRoute
+    Properties: 
+      DestinationCidrBlock: 0.0.0.0/0
+      TransitGatewayAttachmentId: !Ref TgwAttachmentEgressVpc
+      TransitGatewayRouteTableId: !Ref TransitGatewayRouteTableMain 
+  TgwRouteEgress:
+    Type: AWS::EC2::TransitGatewayRoute
+    Properties: 
+      DestinationCidrBlock: 208.233.162.0/23
+      TransitGatewayAttachmentId: !Ref TgwAttachmentEgressVpc
+      TransitGatewayRouteTableId: !Ref TransitGatewayRouteTableMain
+  TgwRouteFedDev:    
+    Type: AWS::EC2::TransitGatewayRoute
+    Properties: 
+      DestinationCidrBlock: 208.235.100.0/22
+      TransitGatewayAttachmentId: !Ref TgwAttachmentFedDevVpc
+      TransitGatewayRouteTableId: !Ref TransitGatewayRouteTableMain
+  TgwRouteFedProd:    
+    Type: AWS::EC2::TransitGatewayRoute
+    Properties: 
+      DestinationCidrBlock: 208.235.96.0/22
+      TransitGatewayAttachmentId: !Ref TgwAttachmentFedProdVpc
+      TransitGatewayRouteTableId: !Ref TransitGatewayRouteTableMain
+  TgwRouteFedEdge:    
+    Type: AWS::EC2::TransitGatewayRoute
+    Properties: 
+      DestinationCidrBlock: 208.233.160.0/23
+      TransitGatewayAttachmentId: !Ref TgwAttachmentEdgeVpc
+      TransitGatewayRouteTableId: !Ref TransitGatewayRouteTableMain
+  TgwRouteVerizon1:    
+    Type: AWS::EC2::TransitGatewayRoute
+    Properties: 
+      DestinationCidrBlock: 68.128.128.0/18
+      TransitGatewayAttachmentId: !Ref TgwAttachmentEdgeVpc
+      TransitGatewayRouteTableId: !Ref TransitGatewayRouteTableMain
+  TgwRouteVerizon2:    
+    Type: AWS::EC2::TransitGatewayRoute
+    Properties: 
+      DestinationCidrBlock: 63.12.0.0/14
+      TransitGatewayAttachmentId: !Ref TgwAttachmentEdgeVpc
+      TransitGatewayRouteTableId: !Ref TransitGatewayRouteTableMain
+  TgwRouteVerizon3:    
+    Type: AWS::EC2::TransitGatewayRoute
+    Properties: 
+      DestinationCidrBlock: 139.49.0.0/16
+      TransitGatewayAttachmentId: !Ref TgwAttachmentEdgeVpc
+      TransitGatewayRouteTableId: !Ref TransitGatewayRouteTableMain
+  TgwRouteVerizon4:    
+    Type: AWS::EC2::TransitGatewayRoute
+    Properties: 
+      DestinationCidrBlock: 153.114.0.0/16
+      TransitGatewayAttachmentId: !Ref TgwAttachmentEdgeVpc
+      TransitGatewayRouteTableId: !Ref TransitGatewayRouteTableMain
+  TgwRouteVerizon5:    
+    Type: AWS::EC2::TransitGatewayRoute
+    Properties: 
+      DestinationCidrBlock: 10.69.0.0/18
+      TransitGatewayAttachmentId: !Ref TgwAttachmentEdgeVpc
+      TransitGatewayRouteTableId: !Ref TransitGatewayRouteTableMain
+  TgwRouteVerizon6:    
+    Type: AWS::EC2::TransitGatewayRoute
+    Properties: 
+      DestinationCidrBlock: 204.61.64.0/22
+      TransitGatewayAttachmentId: !Ref TgwAttachmentEdgeVpc
+      TransitGatewayRouteTableId: !Ref TransitGatewayRouteTableMain
+  TgwRouteVerizon7:    
+    Type: AWS::EC2::TransitGatewayRoute
+    Properties: 
+      DestinationCidrBlock: 10.252.0.0/18
+      TransitGatewayAttachmentId: !Ref TgwAttachmentEdgeVpc
+      TransitGatewayRouteTableId: !Ref TransitGatewayRouteTableMain
+  TgwRouteVerizon8:    
+    Type: AWS::EC2::TransitGatewayRoute
+    Properties: 
+      DestinationCidrBlock: 153.114.240.148/32
+      TransitGatewayAttachmentId: !Ref TgwAttachmentEdgeVpc
+      TransitGatewayRouteTableId: !Ref TransitGatewayRouteTableMain
+  TgwRouteVerizon9:    
+    Type: AWS::EC2::TransitGatewayRoute
+    Properties: 
+      DestinationCidrBlock: 153.114.241.12/32
+      TransitGatewayAttachmentId: !Ref TgwAttachmentEdgeVpc
+      TransitGatewayRouteTableId: !Ref TransitGatewayRouteTableMain
+Outputs:
+  TransitGatewayId:
+    Description: Transit Gateway ID.
+    Value: !Ref TransitGateway
+    Export:
+      Name: pact-net-tgw-use1
+  TransitGatewayRouteTableMainId:
+    Description: Main Routing Table for TGW USE1.
+    Value: !Ref TransitGatewayRouteTableMain
+    Export:
+      Name: pact-net-tgwrt-main-use1
+

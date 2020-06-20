@@ -1,0 +1,62 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Provides networking configuration for a standard, public facing application,
+  separates private-public subnets and enforces traffic with NACL rules (qs-1nb14cqcl)
+
+Resources:
+  # -----------------
+  # Forwarding Rules
+  # -----------------
+  OutboundRule1:
+    Type : AWS::Route53Resolver::ResolverRule
+    Properties : 
+      DomainName : verizon.com
+      Name : verizoncom rule
+      ResolverEndpointId : rslvr-out-9748c777836b45c8a
+      RuleType : FORWARD 
+      Tags : 
+        - 
+          Key : LineOfBusiness
+          Value : PACT
+      TargetIps :
+        - 
+          Ip : 153.114.240.148
+          Port : 53
+        -  
+          Ip :  153.114.241.12
+          Port : 53
+  OutboundRule2:
+    Type : AWS::Route53Resolver::ResolverRule
+    Properties : 
+      DomainName : vzwcorp.com
+      Name : vzwcorpdotcom rule
+      ResolverEndpointId : rslvr-out-9748c777836b45c8a
+      RuleType : FORWARD 
+      Tags : 
+        - 
+          Key : LineOfBusiness
+          Value : PACT
+      TargetIps :
+        - 
+          Ip : 153.114.240.148
+          Port : 53
+        -  
+          Ip :  153.114.241.12
+          Port : 53
+  OutboundRule3:
+    Type : AWS::Route53Resolver::ResolverRule
+    Properties : 
+      DomainName : vzbi.com
+      Name : vzbidotcom rule
+      ResolverEndpointId : rslvr-out-9748c777836b45c8a
+      RuleType : FORWARD 
+      Tags : 
+        - 
+          Key : LineOfBusiness
+          Value : PACT
+      TargetIps :
+        - 
+          Ip : 153.114.240.148
+          Port : 53
+        -  
+          Ip :  153.114.241.12
+          Port : 53

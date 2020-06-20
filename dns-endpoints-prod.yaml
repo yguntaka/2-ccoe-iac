@@ -1,0 +1,66 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Provides networking configuration for a standard, public facing application,
+  separates private-public subnets and enforces traffic with NACL rules (qs-1nb14cqcl)
+#PHZ
+
+Resources:
+  # -----------------
+  # DNS Resources
+  # -----------------
+  HostedZonePACT: 
+    Type: "AWS::Route53::HostedZone"
+    Properties: 
+      HostedZoneConfig: 
+        Comment: 'Private Hosted Zone for pact test'
+      Name: 'pact.verizon.com'
+      VPCs: 
+        - 
+          VPCId: 'vpc-0010b3e48fe4a4ff5'
+          VPCRegion: 'us-east-1'
+        - 
+          VPCId: 'vpc-0d4664e8f50fa5dad'
+          VPCRegion: 'us-east-1'
+        - 
+          VPCId: 'vpc-032d35bbf3e974d17'
+          VPCRegion: 'us-east-1'
+        - 
+          VPCId: 'vpc-041eb478e60b417a1'
+          VPCRegion: 'us-east-1'
+      HostedZoneTags: 
+        - 
+          Key: 'Owner'
+          Value: 'pact-net'
+
+  InboundEndPoint:
+    Type : AWS::Route53Resolver::ResolverEndpoint
+    Properties :
+      Direction : Inbound
+      IpAddresses : 
+        - Ip: 208.233.160.53
+          SubnetId: subnet-012154c907219e8e8
+        - Ip: 208.233.160.117
+          SubnetId: subnet-0531e587701e42890
+      Name : PactInboundEndpoint
+      SecurityGroupIds : 
+        - sg-0d0e4a82cead9df92
+      Tags : 
+        - 
+          Key: Owner
+          Value: pact-net
+
+  OutboundEndPoint:
+    Type : AWS::Route53Resolver::ResolverEndpoint
+    Properties :
+      Direction : Outbound
+      IpAddresses : 
+        - Ip: 208.233.160.54
+          SubnetId: subnet-012154c907219e8e8
+        - Ip: 208.233.160.118
+          SubnetId: subnet-0531e587701e42890
+      Name : PactOutboundEndpoint
+      SecurityGroupIds : 
+        - sg-0d0e4a82cead9df92
+      Tags : 
+        - 
+          Key: Owner
+          Value: pact-net  
